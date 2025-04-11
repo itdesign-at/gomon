@@ -1,11 +1,14 @@
-package v631
+package files
 
 import (
 	"encoding/json"
 	"errors"
-	"github.com/itdesign-at/golib/keyvalue"
 	"os"
+
+	"github.com/itdesign-at/golib/keyvalue"
 )
+
+const f_hostsExportedFile = "/opt/watchit/var/etc/hosts-exported.json"
 
 var (
 	ErrHostNotFound = errors.New("host not found")
