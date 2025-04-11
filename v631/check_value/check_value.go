@@ -1,4 +1,4 @@
-package v631
+package check_value
 
 import (
 	"encoding/json"
@@ -12,6 +12,9 @@ import (
 
 	"github.com/itdesign-at/golib/converter"
 	"github.com/itdesign-at/golib/keyvalue"
+
+	"github.com/itdesign-at/gomon/v631/files"
+	"github.com/itdesign-at/gomon/v631/publisher"
 )
 
 const (
@@ -114,7 +117,8 @@ func (cv *CheckValue) GetData() keyvalue.Record {
 
 func (cv *CheckValue) Bye() int {
 	cv.PrepareExit()
-	md, err := GetMetricDefinition(cv.args.String(Type))
+	mc := files.NewMetricConfig()
+	md, err := mc.Get(cv.args.String(Type))
 	if err != nil {
 		panic(err)
 	}
@@ -129,12 +133,13 @@ func (cv *CheckValue) Bye() int {
 
 	// in most cases to = localhost (default port 4222)
 	to := md.String("$to")
-	publisher := NewNatsPublisher(to).WithSubject(
+
+	p := publisher.NewNatsPublisher(to).WithSubject(
 		[]string{"V2", metric, node, host, service},
 	)
 
 	data, _ := json.Marshal(cv.GetData())
-	err = publisher.Publish(data)
+	err = p.Publish(data)
 	if err != nil {
 		slog.Error("CheckValue: publish failed", err)
 		return 3

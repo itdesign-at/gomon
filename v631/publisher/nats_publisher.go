@@ -1,4 +1,4 @@
-package v631
+package publisher
 
 import (
 	"errors"
