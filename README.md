@@ -1,2 +1,2 @@
 # gomon
-CheckValue, packs, etc. in golang
+golang libs for WATCH IT integration
