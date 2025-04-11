@@ -1,4 +1,4 @@
-module github.com/itdesign.at/gomon
+module github.com/itdesign-at/gomon
 
 go 1.24.2
 
