@@ -3,9 +3,8 @@ package v631
 import (
 	"encoding/json"
 	"errors"
-	"os"
-
 	"github.com/itdesign-at/golib/keyvalue"
+	"os"
 )
 
 var (
