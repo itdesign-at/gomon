@@ -16,12 +16,16 @@ type baseConfig struct {
 	data keyvalue.Record
 }
 
+// newBaseConfig is required to read the baseConfig.json file
 func newBaseConfig() *baseConfig {
 	var bc baseConfig
 	return &bc
 }
 
-func (bc *baseConfig) Read() error {
+// read reads the baseConfig.json file and replaces all
+// occurrences of [[.Something]] with the value of the
+// corresponding key in the baseConfig.json file.
+func (bc *baseConfig) read() error {
 
 	if bc.data != nil { // already read?
 		return nil
@@ -58,16 +62,17 @@ func (bc *baseConfig) Read() error {
 	return nil
 }
 
-// getAll returns all key/value pairs
+// getAll returns all key/value pairs as a copy
+// of the baseConfig.json file
 func (bc *baseConfig) getAll() keyvalue.Record {
-	_ = bc.Read()
+	_ = bc.read()
 	return bc.data.Copy()
 }
 
 // getString returns the string value for a specific key
 func (bc *baseConfig) getString(key string) (string, error) {
 	if bc.data == nil {
-		err := bc.Read()
+		err := bc.read()
 		if err != nil {
 			return "", err
 		}

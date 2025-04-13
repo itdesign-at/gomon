@@ -17,6 +17,8 @@ type MetricConfig struct {
 	data       map[string]keyvalue.Record
 }
 
+// NewMetricConfig creates a new MetricConfig instance and
+// initializes the baseConfig from the baseConfig.json file.
 func NewMetricConfig() *MetricConfig {
 	var mc MetricConfig
 	bc := newBaseConfig()
@@ -24,6 +26,9 @@ func NewMetricConfig() *MetricConfig {
 	return &mc
 }
 
+// Get returns one metric configuration for the given key
+// like e.g. "binary". It does not replace any text template
+// macros.
 func (mc *MetricConfig) Get(key string) (keyvalue.Record, error) {
 	var ret, tmp keyvalue.Record
 
@@ -69,7 +74,7 @@ func (mc *MetricConfig) Get(key string) (keyvalue.Record, error) {
 	return ret, nil
 }
 
-// GetFromBase returns a string value from the base config file
+// GetFromBase returns a string value from the baseConfig.json file
 func (mc *MetricConfig) GetFromBase(key string) (string, error) {
 	if mc.baseConfig == nil {
 		return "", fmt.Errorf("base config not initialized")

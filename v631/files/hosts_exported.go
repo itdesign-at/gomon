@@ -18,11 +18,15 @@ type HostsExported struct {
 	data map[string]keyvalue.Record
 }
 
+// NewHostsExported is responsible reading data from the
+// hosts-exported.json file.
 func NewHostsExported() *HostsExported {
-	var he *HostsExported
-	return he
+	var he HostsExported
+	return &he
 }
 
+// Read reads the hosts-exported.json file and stores
+// the data in the HostsExported instance.
 func (he *HostsExported) Read() error {
 	content, err := os.ReadFile(f_hostsExportedFile)
 	if err != nil {
@@ -35,6 +39,9 @@ func (he *HostsExported) Read() error {
 	return nil
 }
 
+// GetHostProperties returns the properties of a host
+// as a keyvalue.Record. It returns an error if the host
+// is not found in the hosts-exported.json file.
 func (he *HostsExported) GetHostProperties(host string) (keyvalue.Record, error) {
 	var err error
 	var ret keyvalue.Record
