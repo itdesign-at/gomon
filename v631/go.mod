@@ -3,6 +3,8 @@ module github.com/itdesign-at/gomon/v631
 go 1.24.2
 
 require (
+	github.com/gosnmp/gosnmp v1.40.0
+	github.com/itdesign-at/golib/commandLine v1.0.1
 	github.com/itdesign-at/golib/converter v1.0.3
 	github.com/itdesign-at/golib/keyvalue v1.0.2
 	github.com/nats-io/nats.go v1.41.1

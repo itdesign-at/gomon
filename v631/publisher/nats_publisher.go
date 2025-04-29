@@ -1,37 +1,66 @@
 package publisher
 
 import (
+	"encoding/json"
 	"errors"
-	"strings"
+	"github.com/itdesign-at/golib/keyvalue"
 
 	"github.com/nats-io/nats.go"
 )
 
 type NatsPublisher struct {
-	To            string
-	SubjectFields []string
+	// args are used to configure the publisher
+	args keyvalue.Record
+
+	// debug is used to enable debug logging to STDERR with slog
+	debug bool
+
+	// subject is the NATS subject
+	subject string
+
+	// to is the NATS server address
+	to string
 }
 
 func NewNatsPublisher(to string) *NatsPublisher {
-	return &NatsPublisher{To: to}
+	var np NatsPublisher
+	np.args = keyvalue.NewRecord()
+	np.to = to
+	return &np
 }
 
-func (p *NatsPublisher) WithSubject(subjectFields []string) *NatsPublisher {
-	p.SubjectFields = subjectFields
+func (p *NatsPublisher) WithSubject(subject string) *NatsPublisher {
+	p.subject = subject
 	return p
 }
 
+func (p *NatsPublisher) WithArgs(args keyvalue.Record) *NatsPublisher {
+	p.args = args
+	if args.Exists("Debug") {
+		p.debug = true
+	}
+	return p
+}
+
+// PublishJson publishes data as JSON to the NATS server.
+func (p *NatsPublisher) PublishJson(data any) error {
+	j, e := json.Marshal(data)
+	if e != nil {
+		return e
+	}
+	return p.Publish(j)
+}
+
+// Publish publishes data to the NATS server.
 func (p *NatsPublisher) Publish(data []byte) error {
-	nc, err := nats.Connect(p.To)
+	nc, err := nats.Connect(p.to)
 	if err != nil {
 		return err
 	}
 	if nc == nil {
 		return errors.New("nats connection failed")
 	}
-	subject := strings.Join(p.SubjectFields, ".")
-	// slog.Info("Publish", "subject", subject, "to", p.To)
-	if err = nc.Publish(subject, data); err != nil {
+	if err = nc.Publish(p.subject, data); err != nil {
 		return err
 	}
 	nc.Close()
